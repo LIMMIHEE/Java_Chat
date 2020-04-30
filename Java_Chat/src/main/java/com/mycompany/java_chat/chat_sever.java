@@ -5,6 +5,7 @@
  */
 package com.mycompany.java_chat;
 
+import static com.mycompany.java_chat.chat_client.dout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
@@ -44,6 +45,11 @@ public class chat_sever extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Mes_btn.setText("보내기");
+        Mes_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Mes_btnActionPerformed(evt);
+            }
+        });
 
         Mes_field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -96,17 +102,34 @@ public class chat_sever extends javax.swing.JFrame {
 
     private void Mes_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mes_fieldActionPerformed
         // TODO add your handling code here:
-       try{
+//       try{
+//        
+//        String msg = "";
+//        msg = Mes_field.getText();
+//        dout.writeUTF(msg);
+//        
+//        //Msg_area.setText(Mes_field.getText()+"\n 관리자 : "+msg);
+//        Mes_field.setText("");  
+//       }catch(Exception e){
+//           
+//       }
+//        
+    }//GEN-LAST:event_Mes_fieldActionPerformed
+
+    private void Mes_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mes_btnActionPerformed
+        // TODO add your handling code here:
+        try{
         
         String msg = "";
         msg = Mes_field.getText();
         dout.writeUTF(msg);
-        Mes_field.setText("");   
+        
+        Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+msg);
+        Mes_field.setText("");  
        }catch(Exception e){
            
        }
-        
-    }//GEN-LAST:event_Mes_fieldActionPerformed
+    }//GEN-LAST:event_Mes_btnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -150,6 +173,8 @@ public class chat_sever extends javax.swing.JFrame {
         
         try{
             String Mes="";
+            String text="";
+            String Name="";
             Ss = new ServerSocket(2000);    // 서버 설정
             Soket = Ss.accept();
             dis = new DataInputStream(Soket.getInputStream());
@@ -157,8 +182,12 @@ public class chat_sever extends javax.swing.JFrame {
             
             while(!Mes.equals("exit")){
                 Mes = dis.readUTF();
-                Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Mes);
-                
+                Name = Mes.substring(Mes.lastIndexOf("/"+1));
+               // System.out.println(text);
+                text = Mes.substring(0,text.length());
+               // System.out.println(Name);
+                Msg_area.setText(Msg_area.getText()+"\n "+Name+" : "+text);
+                //Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Mes);
             }
             
             

@@ -101,9 +101,12 @@ public class chat_client extends javax.swing.JFrame {
                   try{
         
                     String msg = "";
-                    msg = mse_field.getText();
+                    msg = mse_field.getText()+"/"+Name.getText();
                     dout.writeUTF(msg);
-                    mse_field.setText("");   
+                     
+                    
+                    mse_area.setText(mse_area.getText()+"\n "+Name.getText()+" : "+mse_field.getText());
+                    mse_field.setText("");  
                    }catch(Exception e){
 
                    }
@@ -151,8 +154,9 @@ public class chat_client extends javax.swing.JFrame {
             dout = new DataOutputStream(Soket.getOutputStream());
             
             while(!Mes.equals("exit")){
+                
                 Mes = dis.readUTF();
-                mse_area.setText(mse_area.getText()+"\n "+" : "+Mes);
+                mse_area.setText(mse_area.getText()+"\n 관리자 : "+Mes);
                 
             }
             
