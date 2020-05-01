@@ -20,6 +20,9 @@ public class chat_sever extends javax.swing.JFrame {
         static Socket Soket;
         static DataInputStream dis;
         static DataOutputStream dout;
+        
+        
+        private static boolean Chat_On_off=true;
     /**
      * Creates new form chat_sever
      */
@@ -118,17 +121,27 @@ public class chat_sever extends javax.swing.JFrame {
 
     private void Mes_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mes_btnActionPerformed
         // TODO add your handling code here:
-        try{
+        if(Chat_On_off){
+            try{
         
-        String msg = "";
-        msg = Mes_field.getText();
-        dout.writeUTF(msg);
+            String msg = "";
+            msg = Mes_field.getText();
+            dout.writeUTF(msg);
+
+      
+            if(msg.equals("exit")){
+                Msg_area.setText(Msg_area.getText()+"\n 관리자님이 서버를 닫았습니다.");
+                Ss.close();
+                Chat_On_off=false;
+            }else{
+              Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+msg);
+              Mes_field.setText("");  
+            }
+           }catch(Exception e){
+
+           }
+        }
         
-        Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+msg);
-        Mes_field.setText("");  
-       }catch(Exception e){
-           
-       }
     }//GEN-LAST:event_Mes_btnActionPerformed
 
     /**
@@ -180,14 +193,22 @@ public class chat_sever extends javax.swing.JFrame {
             dis = new DataInputStream(Soket.getInputStream());
             dout = new DataOutputStream(Soket.getOutputStream());
             
-            while(!Mes.equals("exit")){
+            while(Chat_On_off){
                 Mes = dis.readUTF();
-                Name = Mes.substring(Mes.lastIndexOf("/"+1));
-               // System.out.println(text);
-                text = Mes.substring(0,text.length());
-               // System.out.println(Name);
-                Msg_area.setText(Msg_area.getText()+"\n "+Name+" : "+text);
-                //Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Mes);
+                if(Mes.equals("exit")){
+                    Msg_area.setText(Msg_area.getText()+"\n 관리자님이 채팅방을 나갔습니다.");
+                }else{
+                    Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Mes);   
+                }
+                /*
+                    Name = Mes.substring(Mes.lastIndexOf("/"+1));
+                    Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Name);
+                    System.out.println(text);
+                    text = Mes.substring(0,Name.length());
+                    System.out.println(Name);
+                    //Msg_area.setText(Msg_area.getText()+"\n "+Name+" : "+Mes);
+                    Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Mes);
+                */
             }
             
             

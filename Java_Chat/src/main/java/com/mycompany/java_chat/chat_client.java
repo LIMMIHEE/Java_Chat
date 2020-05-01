@@ -22,6 +22,8 @@ public class chat_client extends javax.swing.JFrame {
         static Socket Soket;
         static DataInputStream dis;
         static DataOutputStream dout;
+        private static String Nic_Name="";
+        private static boolean Chat_On_off=true;
     /**
      * Creates new form chat_client
      */
@@ -97,19 +99,25 @@ public class chat_client extends javax.swing.JFrame {
 
     private void mse_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mse_sendActionPerformed
                 // TODO add your handling code here:
-                
-                  try{
+               if(Chat_On_off){
+                    try{
         
-                    String msg = "";
-                    msg = mse_field.getText()+"/"+Name.getText();
+                    String msg = mse_field.getText();
+                    //msg = mse_field.getText()+"/"+Name.getText();
                     dout.writeUTF(msg);
-                     
+                    Nic_Name=Name.getText();
                     
                     mse_area.setText(mse_area.getText()+"\n "+Name.getText()+" : "+mse_field.getText());
                     mse_field.setText("");  
+                    if(msg.equals("exit")){
+                         mse_area.setText(mse_area.getText()+"\n "+Nic_Name+"님이 채팅방을 나갔습니다.");
+                         Chat_On_off=false;
+                    }
                    }catch(Exception e){
 
                    }
+               }
+               
         
     }//GEN-LAST:event_mse_sendActionPerformed
 
@@ -153,14 +161,20 @@ public class chat_client extends javax.swing.JFrame {
             dis = new DataInputStream(Soket.getInputStream());
             dout = new DataOutputStream(Soket.getOutputStream());
             
+//            while(Chat_On_off){
+//                Nic_Name=Name.getText();
+//                Mes = dis.readUTF();
+//                mse_area.setText(mse_area.getText()+"\n 관리자 : "+Mes);
+//                
+//            }
             while(!Mes.equals("exit")){
                 
                 Mes = dis.readUTF();
                 mse_area.setText(mse_area.getText()+"\n 관리자 : "+Mes);
                 
             }
-            
-            
+               
+             
             
         }catch(Exception e){
             
@@ -170,7 +184,7 @@ public class chat_client extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField Name;
+    private static javax.swing.JTextField Name;
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTextArea mse_area;
     private javax.swing.JTextField mse_field;
