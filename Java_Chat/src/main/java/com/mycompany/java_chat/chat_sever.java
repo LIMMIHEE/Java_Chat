@@ -8,6 +8,10 @@ package com.mycompany.java_chat;
 import static com.mycompany.java_chat.chat_client.dout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,7 +24,8 @@ public class chat_sever extends javax.swing.JFrame {
         static Socket Soket;
         static DataInputStream dis;
         static DataOutputStream dout;
-        
+        static String name="";
+
         
         private static boolean Chat_On_off=true;
     /**
@@ -44,6 +49,7 @@ public class chat_sever extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         Msg_area = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,6 +73,8 @@ public class chat_sever extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 1, 18)); // NOI18N
         jLabel1.setText("SEVER");
 
+        jLabel2.setText("서버 닫기 : exit");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -76,21 +84,22 @@ public class chat_sever extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2))
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(Mes_field, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(Mes_btn, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)))
-                        .addGap(41, 41, 41))))
+                        .addComponent(Mes_field, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Mes_btn, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)))
+                .addGap(41, 41, 41))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
@@ -123,10 +132,9 @@ public class chat_sever extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(Chat_On_off){
             try{
-        
             String msg = "";
             msg = Mes_field.getText();
-            dout.writeUTF(msg);
+            
 
       
             if(msg.equals("exit")){
@@ -134,6 +142,8 @@ public class chat_sever extends javax.swing.JFrame {
                 Ss.close();
                 Chat_On_off=false;
             }else{
+                
+                dout.writeUTF(msg);
               Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+msg);
               Mes_field.setText("");  
             }
@@ -185,20 +195,31 @@ public class chat_sever extends javax.swing.JFrame {
         });
         
         try{
+            
             String Mes="";
-            String text="";
-            String Name="";
+//            String text="";
+//            String Name="";
             Ss = new ServerSocket(2000);    // 서버 설정
             Soket = Ss.accept();
             dis = new DataInputStream(Soket.getInputStream());
             dout = new DataOutputStream(Soket.getOutputStream());
             
             while(Chat_On_off){
+                        File file = new File("E:/전공/클론장소/Java_Chat/Output.txt");
+                 FileReader file_reader = new FileReader(file);
+                int num=0;
+                name="";
+                while((num = file_reader.read()) != -1){
+                    name+=(char)num;
+                }
+                
+                
                 Mes = dis.readUTF();
                 if(Mes.equals("exit")){
-                    Msg_area.setText(Msg_area.getText()+"\n 관리자님이 채팅방을 나갔습니다.");
+                    Msg_area.setText(Msg_area.getText()+"\n "+name+"님이 채팅방을 나갔습니다.");
+                    file_reader.close();
                 }else{
-                    Msg_area.setText(Msg_area.getText()+"\n 관리자 : "+Mes);   
+                    Msg_area.setText(Msg_area.getText()+"\n "+name+" : "+Mes);   
                 }
                 /*
                     Name = Mes.substring(Mes.lastIndexOf("/"+1));
@@ -225,6 +246,7 @@ public class chat_sever extends javax.swing.JFrame {
     private javax.swing.JTextField Mes_field;
     private static javax.swing.JTextArea Msg_area;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 

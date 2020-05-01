@@ -11,6 +11,10 @@ import static com.mycompany.java_chat.chat_sever.dis;
 import static com.mycompany.java_chat.chat_sever.dout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -45,6 +49,7 @@ public class chat_client extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         mse_area = new javax.swing.JTextArea();
         Name = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,6 +66,8 @@ public class chat_client extends javax.swing.JFrame {
 
         Name.setText("Name");
 
+        jLabel1.setText("채팅 나가기 : exit");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -71,8 +78,11 @@ public class chat_client extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel1))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(mse_field)
@@ -83,8 +93,10 @@ public class chat_client extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
@@ -101,17 +113,20 @@ public class chat_client extends javax.swing.JFrame {
                 // TODO add your handling code here:
                if(Chat_On_off){
                     try{
-        
+                    
                     String msg = mse_field.getText();
                     //msg = mse_field.getText()+"/"+Name.getText();
-                    dout.writeUTF(msg);
+                    
                     Nic_Name=Name.getText();
+                    
                     
                     mse_area.setText(mse_area.getText()+"\n "+Name.getText()+" : "+mse_field.getText());
                     mse_field.setText("");  
                     if(msg.equals("exit")){
                          mse_area.setText(mse_area.getText()+"\n "+Nic_Name+"님이 채팅방을 나갔습니다.");
                          Chat_On_off=false;
+                    }else{
+                        dout.writeUTF(msg);
                     }
                    }catch(Exception e){
 
@@ -168,6 +183,12 @@ public class chat_client extends javax.swing.JFrame {
 //                
 //            }
             while(!Mes.equals("exit")){
+                OutputStream output = new FileOutputStream("E:/전공/클론장소/Java_Chat/Output.txt");
+                File file = new File("E:/전공/클론장소/Java_Chat/Output.txt");
+                FileWriter fw=new FileWriter(file,false);
+                fw.write("");
+                byte[] By = Nic_Name.getBytes();
+                output.write(By);
                 
                 Mes = dis.readUTF();
                 mse_area.setText(mse_area.getText()+"\n 관리자 : "+Mes);
@@ -185,6 +206,7 @@ public class chat_client extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JTextField Name;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTextArea mse_area;
     private javax.swing.JTextField mse_field;
